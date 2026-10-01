@@ -1,0 +1,22 @@
+LE JEU DE L'INFINITIF - application pour smartphone
+===================================================
+
+1. Mettre le dossier en ligne (gratuit), par exemple avec GitHub Pages :
+   - créer un compte sur github.com, puis un nouveau dépôt public ;
+   - « Add file > Upload files » : déposer TOUT le contenu de ce dossier
+     (index.html, sw.js, manifest.webmanifest, et les dossiers fonts et icons) ;
+   - Settings > Pages > Branch : main > Save ;
+   - après une ou deux minutes, l'adresse du jeu s'affiche (https://....github.io/...).
+
+2. Installer sur le téléphone :
+   - Android (Chrome) : ouvrir l'adresse, menu ⋮ > « Installer l'application »
+     ou « Ajouter à l'écran d'accueil ».
+   - iPhone / iPad (Safari) : ouvrir l'adresse, bouton Partager >
+     « Sur l'écran d'accueil ».
+
+L'icône apparaît comme une vraie appli. Après la première ouverture,
+le jeu fonctionne sans internet. La progression reste sur l'appareil.
+
+Pour modifier le jeu plus tard : remplacer index.html et changer
+'infinitif-v1' en 'infinitif-v2' dans sw.js, pour que les téléphones
+reçoivent la nouvelle version.

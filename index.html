@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#E4524A">
+<meta name="description" content="Jeu pour s'entraîner au verbe à l'infinitif : 435 exercices.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Infinitif">
+<style>
+@font-face{font-family:"Andika";src:url(fonts/andika-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Andika";src:url(fonts/andika-latin-700-normal.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Fredoka";src:url(fonts/fredoka-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Fredoka";src:url(fonts/fredoka-latin-600-normal.woff2) format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Fredoka";src:url(fonts/fredoka-latin-700-normal.woff2) format("woff2");font-weight:700;font-display:swap}
+</style>
+<title>Le jeu de l'infinitif</title>
+<style>
+:root{
+  --paper:#EEF2F7; --ink:#1E2230; --soft:#5B6275; --card:#FFFFFF;
+  --red:#E4524A; --indigo:#4F3F97; --maroon:#7E2230; --green:#2E8B3E; --pink:#D6336C; --orange:#C9761A;
+  --line:#CCD3DF; --okbg:#E3F4E6; --nobg:#FCE6E4; --warnbg:#FBF0DC;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#171A24; --ink:#EEF0F6; --soft:#A7AEC2; --card:#222634;
+    --red:#F0675F; --indigo:#A193EA; --maroon:#E07A8A; --green:#5CC46E; --pink:#F06A9A; --orange:#E9A04A;
+    --line:#3A4052; --okbg:#1E3525; --nobg:#3D2225; --warnbg:#3A2F1C;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#171A24; --ink:#EEF0F6; --soft:#A7AEC2; --card:#222634;
+  --red:#F0675F; --indigo:#A193EA; --maroon:#E07A8A; --green:#5CC46E; --pink:#F06A9A; --orange:#E9A04A;
+  --line:#3A4052; --okbg:#1E3525; --nobg:#3D2225; --warnbg:#3A2F1C;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{margin:0;min-height:100%}
+body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none;background:var(--paper);color:var(--ink);font-family:"Andika","Trebuchet MS",Verdana,sans-serif;font-size:19px;line-height:1.5}
+main{max-width:600px;margin:0 auto;padding:18px 16px 48px}
+h1,h2,.btn,.pill,.score,.act b{font-family:"Fredoka","Trebuchet MS",sans-serif}
+
+.top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.sun{flex:none;width:64px;height:64px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;text-align:center;font-family:"Fredoka",sans-serif;font-weight:700;font-size:11px;line-height:1.1;padding:6px;border:none;cursor:pointer}
+.top h1{font-size:1.35rem;margin:0;line-height:1.15}
+.top p{margin:2px 0 0;color:var(--soft);font-size:.9rem}
+
+.track{height:10px;background:var(--line);border-radius:10px;overflow:hidden;margin:6px 0 18px}
+.track i{display:block;height:100%;width:0;background:var(--red);border-radius:10px;transition:width .35s ease}
+
+/* menu */
+.mix{width:100%;background:var(--red);border-color:var(--red);color:#fff;margin-bottom:18px;font-size:1.15rem;padding:14px}
+.acts{display:grid;gap:10px}
+.act{display:block;width:100%;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-left:8px solid var(--c);border-radius:14px;padding:12px 14px;cursor:pointer;font:inherit}
+.act b{display:block;font-size:1.08rem;font-weight:600;color:var(--c)}
+.act span{display:block;font-size:.92rem;color:var(--soft);line-height:1.35}
+.act .meter{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:.82rem;color:var(--soft)}
+.act .meter i{flex:1;height:6px;border-radius:6px;background:var(--line);overflow:hidden;position:relative}
+.act .meter i::after{content:"";position:absolute;inset:0;width:var(--p);background:var(--c)}
+.reset{background:none;border:none;color:var(--soft);font:inherit;font-size:.85rem;text-decoration:underline;margin-top:18px;cursor:pointer}
+
+.bar2{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.pill{display:inline-block;color:#fff;font-weight:600;font-size:.88rem;padding:6px 14px;border-radius:6px 14px 6px 14px}
+.back{background:none;border:none;color:var(--soft);font:inherit;font-size:.88rem;text-decoration:underline;cursor:pointer;white-space:nowrap}
+.card{background:var(--card);border:3px solid var(--c,var(--indigo));border-radius:22px 10px 22px 10px;padding:20px 18px}
+.ask{margin:0 0 14px;font-weight:700}
+.sentence{font-size:1.25rem;line-height:2.2;margin:0}
+.text{font-size:1.12rem;line-height:2.3;margin:0}
+.w{display:inline;border:none;background:transparent;font:inherit;color:inherit;padding:2px 3px;margin:0;border-radius:6px;cursor:pointer;border-bottom:2px dashed var(--line)}
+.w:hover{background:var(--paper)}
+.w.hit{color:var(--green);font-weight:700;border-bottom:3px solid var(--pink)}
+.w.miss{background:var(--nobg);color:var(--red);text-decoration:line-through}
+.w.lost{background:var(--warnbg);color:var(--orange);font-weight:700;border-bottom:3px solid var(--orange)}
+.w:disabled{cursor:default}
+.hl{color:var(--pink);font-weight:700}
+.blank{display:inline-block;min-width:80px;border-bottom:3px solid var(--pink);text-align:center;color:var(--pink);font-weight:700;line-height:1.3}
+.big{font-size:1.8rem;font-family:"Fredoka",sans-serif;font-weight:600;margin:0}
+.astuce{margin:8px 0 0;color:var(--maroon);font-weight:700}
+.astuce span{display:inline-block;min-width:90px;border-bottom:3px solid var(--maroon);text-align:center}
+
+.opts{display:grid;gap:10px;margin-top:16px}
+.opts.four{grid-template-columns:repeat(4,1fr)}
+.btn{font-size:1.08rem;font-weight:600;border:3px solid var(--line);background:var(--card);color:var(--ink);padding:12px 10px;border-radius:14px;cursor:pointer;transition:transform .1s}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible,.w:focus-visible,.act:focus-visible,input:focus-visible{outline:3px solid var(--indigo);outline-offset:2px}
+.btn.ok{border-color:var(--green);background:var(--okbg);color:var(--green)}
+.btn.no{border-color:var(--red);background:var(--nobg);color:var(--red)}
+.btn.sel{border-color:var(--indigo);background:var(--paper)}
+.btn:disabled{cursor:default}
+
+.write{display:flex;gap:8px;margin-top:14px}
+.write input,.vrow input{flex:1;min-width:0;font:inherit;font-size:1.15rem;padding:10px 12px;border:3px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink)}
+input.ok{border-color:var(--green);background:var(--okbg)}
+input.no{border-color:var(--red);background:var(--nobg)}
+.go{background:var(--indigo);border-color:var(--indigo);color:#fff}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.cols div{display:grid;gap:8px;align-content:start}
+.cols .btn{font-size:1rem;padding:10px 6px}
+
+.slots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0}
+.slot,.tile{width:42px;height:48px;display:grid;place-items:center;font-family:"Fredoka",sans-serif;font-size:1.4rem;font-weight:600;border-radius:10px}
+.slot{border:3px dashed var(--line);background:var(--paper);cursor:pointer;color:var(--ink)}
+.slot.full{border-style:solid;border-color:var(--indigo)}
+.slots.ok .slot{border-color:var(--green);background:var(--okbg);color:var(--green)}
+.slots.no .slot{border-color:var(--red);background:var(--nobg);color:var(--red)}
+.tiles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tile{border:3px solid var(--maroon);background:var(--card);color:var(--maroon);cursor:pointer;padding:0}
+.tile:disabled{opacity:.25;cursor:default}
+.ghost{background:none;font-size:.95rem;padding:8px 14px;margin:14px auto 0;display:block}
+
+.count{font-size:.95rem;color:var(--soft);margin:12px 0 0}
+.vlist{margin-top:16px;display:grid;gap:10px}
+.vrow{display:flex;align-items:center;gap:10px}
+.vrow b{min-width:110px;color:var(--pink)}
+.vrow small{color:var(--red);font-weight:700}
+
+.fb{margin-top:16px;padding:12px 14px;border-radius:12px;font-size:1rem;display:none}
+.fb.show{display:block}
+.fb.good{background:var(--okbg)}
+.fb.bad{background:var(--nobg)}
+.fb b{font-family:"Fredoka",sans-serif}
+.next{display:none;width:100%;margin-top:16px;background:var(--red);border-color:var(--red);color:#fff}
+.next.show{display:block}
+.row2{display:grid;gap:10px;margin-top:16px}
+
+.end{text-align:center}
+.score{font-size:3.4rem;font-weight:700;color:var(--red);margin:6px 0 0;line-height:1}
+.stars{font-size:2.3rem;letter-spacing:6px;margin:10px 0}
+.recap{text-align:left;margin:18px 0 0;padding:0;list-style:none}
+.recap li{padding:8px 0;border-bottom:1px dashed var(--line);font-size:1rem}
+.recap li:last-child{border:none}
+/* mots croisés */
+.cw{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,40px));gap:3px;justify-content:center;margin:6px 0 16px}
+.cc,.cx{aspect-ratio:1/1;position:relative}
+.cc input{width:100%;height:100%;border:2px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);text-align:center;font-family:"Fredoka",sans-serif;font-weight:600;font-size:1.05rem;text-transform:uppercase;padding:0;caret-color:transparent}
+.cc input:focus{outline:none;border-color:var(--indigo);background:var(--paper)}
+.cc.on input{background:var(--paper);border-color:var(--indigo)}
+.cc input.ok{border-color:var(--green);background:var(--okbg);color:var(--green)}
+.cc input.no{border-color:var(--red);background:var(--nobg);color:var(--red)}
+.cc .num{position:absolute;top:1px;left:3px;font-size:.6rem;line-height:1;color:var(--soft);pointer-events:none;font-weight:700}
+.clues h3{font-family:"Fredoka",sans-serif;font-size:1rem;margin:12px 0 4px;color:var(--c)}
+.clue{display:block;width:100%;text-align:left;background:none;border:none;border-radius:8px;padding:5px 8px;font:inherit;font-size:1rem;color:var(--ink);cursor:pointer}
+.clue.on{background:var(--paper);font-weight:700}
+.clue.solved{color:var(--green)}
+.cwnote{font-size:.95rem;color:var(--red);margin:10px 0 0;min-height:1.2em}
+@media (max-width:400px){.opts.four{grid-template-columns:repeat(2,1fr)}.vrow b{min-width:90px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <button class="sun" id="home" aria-label="Retour au menu">Le verbe à l'infinitif</button>
+    <div>
+      <h1>Le jeu de l'infinitif</h1>
+      <p id="sub"></p>
+    </div>
+  </div>
+  <div class="track" aria-hidden="true"><i id="bar"></i></div>
+  <div id="app"></div>
+</main>
+
+<script>
+/* ---------- outils ---------- */
+const RNG=seed=>{let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}};
+const rp=(r,a)=>a[Math.floor(r()*a.length)];
+const shuf=(a,r=Math.random)=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const hash=s=>[...s].reduce((h,c)=>Math.imul(h^c.charCodeAt(0),16777619),2166136261);
+const vow=w=>/^[aeiouyéèêâîôh]/i.test(w);
+const cap=w=>w.charAt(0).toUpperCase()+w.slice(1);
+const strip=x=>x.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+function check(val,ans){
+  const n=val.trim().toLowerCase().replace(/[’`]/g,"'").replace(/\s+/g,' ').replace(/^il faut /,'').replace(/^(se |s')/,'');
+  for(const a of ans){ if(n===a) return {ok:true}; }
+  for(const a of ans){ if(strip(n)===strip(a)) return {ok:true,acc:true}; }
+  return {ok:false};
+}
+
+/* ---------- les verbes ---------- */
+const RAW=`jouer;joue,joues,joue,jouons,jouez,jouent;au ballon;a
+chanter;chante,chantes,chante,chantons,chantez,chantent;une chanson;o
+danser;danse,danses,danse,dansons,dansez,dansent;avec des amis;a
+manger;mange,manges,mange,mangeons,mangez,mangent;une pomme;o
+regarder;regarde,regardes,regarde,regardons,regardez,regardent;un dessin animé;o
+écouter;écoute,écoutes,écoute,écoutons,écoutez,écoutent;de la musique;o
+parler;parle,parles,parle,parlons,parlez,parlent;au téléphone;a
+marcher;marche,marches,marche,marchons,marchez,marchent;dans la forêt;a
+aimer;aime,aimes,aime,aimons,aimez,aiment;les gâteaux;o
+travailler;travaille,travailles,travaille,travaillons,travaillez,travaillent;dans le jardin;a
+ranger;range,ranges,range,rangeons,rangez,rangent;la chambre;o
+laver;lave,laves,lave,lavons,lavez,lavent;la voiture;o
+porter;porte,portes,porte,portons,portez,portent;un gros sac;o
+acheter;achète,achètes,achète,achetons,achetez,achètent;du pain;o
+appeler;appelle,appelles,appelle,appelons,appelez,appellent;le chien;o
+commencer;commence,commences,commence,commençons,commencez,commencent;le travail;o
+nager;nage,nages,nage,nageons,nagez,nagent;dans la mer;a
+dessiner;dessine,dessines,dessine,dessinons,dessinez,dessinent;un chat;o
+fermer;ferme,fermes,ferme,fermons,fermez,ferment;la porte;o
+préparer;prépare,prépares,prépare,préparons,préparez,préparent;le repas;o
+cuisiner;cuisine,cuisines,cuisine,cuisinons,cuisinez,cuisinent;des crêpes;o
+arriver;arrive,arrives,arrive,arrivons,arrivez,arrivent;à l'école;a
+tomber;tombe,tombes,tombe,tombons,tombez,tombent;dans la boue;a
+entrer;entre,entres,entre,entrons,entrez,entrent;dans la classe;a
+rester;reste,restes,reste,restons,restez,restent;à la maison;a
+lancer;lance,lances,lance,lançons,lancez,lancent;la balle;o
+essayer;essaie,essaies,essaie,essayons,essayez,essaient;un pull;o
+envoyer;envoie,envoies,envoie,envoyons,envoyez,envoient;une lettre;o
+payer;paie,paies,paie,payons,payez,paient;les courses;o
+nettoyer;nettoie,nettoies,nettoie,nettoyons,nettoyez,nettoient;la table;o
+crier;crie,cries,crie,crions,criez,crient;très fort;a
+pleurer;pleure,pleures,pleure,pleurons,pleurez,pleurent;sous la pluie;a
+oublier;oublie,oublies,oublie,oublions,oubliez,oublient;le cahier;o
+chercher;cherche,cherches,cherche,cherchons,cherchez,cherchent;les clés;o
+trouver;trouve,trouves,trouve,trouvons,trouvez,trouvent;un trésor;o
+raconter;raconte,racontes,raconte,racontons,racontez,racontent;une histoire;o
+finir;finis,finis,finit,finissons,finissez,finissent;les devoirs;o
+choisir;choisis,choisis,choisit,choisissons,choisissez,choisissent;un livre;o
+grandir;grandis,grandis,grandit,grandissons,grandissez,grandissent;très vite;a
+remplir;remplis,remplis,remplit,remplissons,remplissez,remplissent;le verre;o
+réussir;réussis,réussis,réussit,réussissons,réussissez,réussissent;l'exercice;o
+obéir;obéis,obéis,obéit,obéissons,obéissez,obéissent;aux parents;a
+bâtir;bâtis,bâtis,bâtit,bâtissons,bâtissez,bâtissent;une maison;o
+salir;salis,salis,salit,salissons,salissez,salissent;le tapis;o
+ralentir;ralentis,ralentis,ralentit,ralentissons,ralentissez,ralentissent;devant l'école;a
+applaudir;applaudis,applaudis,applaudit,applaudissons,applaudissez,applaudissent;les artistes;o
+sortir;sors,sors,sort,sortons,sortez,sortent;dans la cour;a
+partir;pars,pars,part,partons,partez,partent;en vacances;a
+dormir;dors,dors,dort,dormons,dormez,dorment;dans la tente;a
+courir;cours,cours,court,courons,courez,courent;dans le parc;a
+venir;viens,viens,vient,venons,venez,viennent;à la fête;a
+tenir;tiens,tiens,tient,tenons,tenez,tiennent;la rampe;o
+ouvrir;ouvre,ouvres,ouvre,ouvrons,ouvrez,ouvrent;la fenêtre;o
+offrir;offre,offres,offre,offrons,offrez,offrent;un cadeau;o
+cueillir;cueille,cueilles,cueille,cueillons,cueillez,cueillent;des fleurs;o
+servir;sers,sers,sert,servons,servez,servent;le dessert;o
+sentir;sens,sens,sent,sentons,sentez,sentent;une odeur;o
+voir;vois,vois,voit,voyons,voyez,voient;la mer;o
+vouloir;veux,veux,veut,voulons,voulez,veulent;un bonbon;o
+pouvoir;peux,peux,peut,pouvons,pouvez,peuvent;;-
+devoir;dois,dois,doit,devons,devez,doivent;;-
+savoir;sais,sais,sait,savons,savez,savent;la réponse;o
+recevoir;reçois,reçois,reçoit,recevons,recevez,reçoivent;un colis;o
+apercevoir;aperçois,aperçois,aperçoit,apercevons,apercevez,aperçoivent;un oiseau;o
+avoir;ai,as,a,avons,avez,ont;un chat;o
+être;suis,es,est,sommes,êtes,sont;;-
+aller;vais,vas,va,allons,allez,vont;au cinéma;a
+prendre;prends,prends,prend,prenons,prenez,prennent;le train;o
+apprendre;apprends,apprends,apprend,apprenons,apprenez,apprennent;la leçon;o
+comprendre;comprends,comprends,comprend,comprenons,comprenez,comprennent;la consigne;o
+rendre;rends,rends,rend,rendons,rendez,rendent;le livre;o
+vendre;vends,vends,vend,vendons,vendez,vendent;des fruits;o
+attendre;attends,attends,attend,attendons,attendez,attendent;le bus;o
+entendre;entends,entends,entend,entendons,entendez,entendent;un bruit;o
+répondre;réponds,réponds,répond,répondons,répondez,répondent;à la question;a
+descendre;descends,descends,descend,descendons,descendez,descendent;l'escalier;o
+perdre;perds,perds,perd,perdons,perdez,perdent;la clé;o
+mettre;mets,mets,met,mettons,mettez,mettent;un manteau;o
+lire;lis,lis,lit,lisons,lisez,lisent;un livre;o
+écrire;écris,écris,écrit,écrivons,écrivez,écrivent;une lettre;o
+dire;dis,dis,dit,disons,dites,disent;bonjour;o
+faire;fais,fais,fait,faisons,faites,font;un gâteau;o
+boire;bois,bois,boit,buvons,buvez,boivent;de l'eau;o
+rire;ris,ris,rit,rions,riez,rient;aux éclats;a
+croire;crois,crois,croit,croyons,croyez,croient;cette histoire;o
+vivre;vis,vis,vit,vivons,vivez,vivent;à la campagne;a
+conduire;conduis,conduis,conduit,conduisons,conduisez,conduisent;la voiture;o
+construire;construis,construis,construit,construisons,construisez,construisent;une cabane;o
+peindre;peins,peins,peint,peignons,peignez,peignent;un tableau;o
+éteindre;éteins,éteins,éteint,éteignons,éteignez,éteignent;la lumière;o
+connaître;connais,connais,connaît,connaissons,connaissez,connaissent;le chemin;o`;
+const V=RAW.trim().split('\n').map(l=>{const[inf,f,comp,k]=l.split(';');return{inf,f:f.split(','),comp,k}});
+const VI=Object.fromEntries(V.map(v=>[v.inf,v]));
+const SV=V.filter(v=>v.comp);
+const OV=V.filter(v=>v.k==='o');
+const INTR=['dormir','rire','nager','arriver','partir','venir','grandir','pleurer','marcher','rester'];
+const MODALS=['pouvoir','vouloir','devoir','aller','aimer'];
+const PREPS=[{v:'essayer',p:'de'},{v:'commencer',p:'à'},{v:'réussir',p:'à'},{v:'sortir',p:'pour'},{v:'partir',p:'sans'},{v:'avoir',x:'envie',p:'de'},{v:'avoir',x:'peur',p:'de'}];
+const SUBJ=[{t:'je',p:0},{t:'tu',p:1},{t:'il',p:2},{t:'elle',p:2},{t:'on',p:2},{t:'nous',p:3},{t:'vous',p:4},{t:'ils',p:5},{t:'elles',p:5},{t:'Léa',p:2},{t:'mon frère',p:2},{t:'la maîtresse',p:2},{t:'les enfants',p:5},{t:'Tom et Zoé',p:5}];
+const SUBJ_NOJE=SUBJ.filter(s=>s.t!=='je');
+
+function pronForm(r,v,p){
+  const pr=p===0?'je':p===1?'tu':p===2?rp(r,['il','elle','on']):p===3?'nous':p===4?'vous':rp(r,['ils','elles']);
+  const f=v.f[p];return (pr==='je'&&vow(f))?"j'"+f:pr+' '+f;
+}
+
+/* ---------- phrases ---------- */
+function subjT(s,form,role){
+  if(s.t==='je'&&vow(form)) return [{w:"J'",g:1,role:'subj'},{w:form,role}];
+  const ws=s.t.split(' ').map(w=>({w,role:'subj'}));ws[0].w=cap(ws[0].w);
+  return [...ws,{w:form,role}];
+}
+const compT=c=>c?c.split(' ').map(w=>({w})):[];
+const END=()=>({w:'.',p:1});
+function sPlain(r,v,s){return{toks:[...subjT(s,v.f[s.p],'conj'),...compT(v.comp),END()],subj:s.t}}
+function sModal(r,v,s){const m=rp(r,MODALS.filter(m=>m!==v.inf));const mf=VI[m].f[s.p];
+  return{toks:[...subjT(s,mf,'ctx'),{w:v.inf,role:'inf'},...compT(v.comp),END()],kind:'v',m:mf}}
+function sPrep(r,v,s){const c=rp(r,PREPS.filter(c=>c.v!==v.inf));const cf=VI[c.v].f[s.p];
+  const pt=(c.p==='de'&&vow(v.inf))?{w:"d'",g:1,role:'prep'}:{w:c.p,role:'prep'};
+  return{toks:[...subjT(s,cf,'ctx'),...(c.x?[{w:c.x}]:[]),pt,{w:v.inf,role:'inf'},...compT(v.comp),END()],kind:'p',m:c.p}}
+function sentHTML(toks,o={}){
+  let h='';toks.forEach((t,i)=>{
+    const sp=(i===0||toks[i-1].g||t.p)?'':' ';let x;
+    if(o.blank&&t.role===o.blank)x=`<span class="blank" id="blank">?</span>`;
+    else if(o.tap&&!t.p)x=`<button class="w" data-t="${i}">${t.w}</button>`;
+    else if(o.hl&&t.role===o.hl)x=`<span class="hl">${t.w}</span>`;
+    else x=t.w;h+=sp+x});
+  return `<p class="sentence">${h}</p>`;
+}
+function sentText(toks,role,rep){
+  let h='';toks.forEach((t,i)=>{const sp=(i===0||toks[i-1].g||t.p)?'':' ';h+=sp+(role&&t.role===role?`<b>${rep}</b>`:t.w)});return h;
+}
+
+/* ---------- textes ---------- */
+const TEXTS=[
+"Le matin, Léo [prend|prendre] son vélo. Il [roule|rouler] vite car il [veut|vouloir] arriver à l'heure. À l'école, ses amis l'[attendent|attendre] devant le portail.",
+"Mamie [prépare|préparer] une tarte. Nous [aimons|aimer] cuisiner avec elle. Je [coupe|couper] les pommes et ma sœur [mélange|mélanger] la pâte.",
+"Le chat [dort|dormir] sur le canapé. Soudain, il [entend|entendre] un bruit. Il [saute|sauter] par terre et [court|courir] vers la cuisine pour chercher son bol.",
+"Dans la classe, les élèves [lisent|lire] une histoire. La maîtresse [pose|poser] des questions. Tom [lève|lever] le doigt pour répondre. Il [connaît|connaître] la bonne réponse.",
+"En été, nous [partons|partir] à la mer. Papa [conduit|conduire] la voiture. Mon frère et moi, nous [jouons|jouer] aux cartes sans faire de bruit.",
+"Tu [viens|venir] au parc avec moi ? On [peut|pouvoir] faire du toboggan. Ensuite, nous [allons|aller] acheter une glace. Tu [choisis|choisir] le parfum !",
+"Le fermier [ouvre|ouvrir] la porte de l'étable. Les vaches [sortent|sortir] dans le pré. Elles [mangent|manger] de l'herbe fraîche. Le chien [surveille|surveiller] le troupeau.",
+"Chaque soir, je [range|ranger] ma chambre. Ensuite, je [mets|mettre] mon pyjama. Maman me [lit|lire] une histoire et je [finis|finir] par m'endormir.",
+"Au printemps, les oiseaux [construisent|construire] leur nid. Ils [cherchent|chercher] des brindilles. La maman [pond|pondre] des œufs et le papa [apporte|apporter] à manger.",
+"Vous [êtes|être] prêts ? Nous [devons|devoir] partir maintenant. Le train [part|partir] dans dix minutes et nous [avons|avoir] encore nos valises à fermer.",
+"Au cirque, le clown [fait|faire] rire les enfants. Il [tombe|tomber] exprès et [crie|crier] très fort. Le public [applaudit|applaudir] pour le remercier.",
+"Zoé [écrit|écrire] une lettre à sa grand-mère. Elle [raconte|raconter] ses vacances. Puis elle [colle|coller] un timbre et [va|aller] poster la lettre.",
+"Il [pleut|pleuvoir] depuis ce matin. Les enfants [restent|rester] à l'intérieur. Ils [dessinent|dessiner] et [construisent|construire] une cabane avec des coussins.",
+"Je [sais|savoir] nager depuis l'été dernier. Aujourd'hui, je [plonge|plonger] dans la piscine sans avoir peur. Mon père me [regarde|regarder] fièrement.",
+"Les pompiers [arrivent|arriver] très vite. Ils [déroulent|dérouler] le tuyau et [éteignent|éteindre] le feu. Tout le monde [remercie|remercier] les pompiers."
+];
+
+/* ---------- générateurs ---------- */
+const G={
+  relier:r=>{const vs=shuf(V,r).slice(0,5);return{key:vs.map(v=>v.inf).sort().join(),pairs:vs.map(v=>({form:pronForm(r,v,Math.floor(r()*6)),inf:v.inf}))}},
+  ecrire:r=>{const v=rp(r,V),p=Math.floor(r()*6);return{key:v.inf+p,form:pronForm(r,v,p),inf:v.inf}},
+  touche:r=>{const v=rp(r,SV),s=rp(r,SUBJ);return{key:v.inf+s.t,...sPlain(r,v,s),inf:v.inf}},
+  choisir:r=>{const v=rp(r,OV),s=rp(r,SUBJ_NOJE);const ds=shuf(INTR.filter(x=>x!==v.inf),r).slice(0,2);
+    if(r()<.5)return{key:'m'+v.inf+s.t,...sModal(r,v,s),blank:'inf',ans:v.inf,opts:[v.inf,...ds]};
+    return{key:'p'+v.inf+s.t,...sPlain(r,v,s),blank:'conj',ans:v.f[s.p],opts:[v.f[s.p],...ds.map(d=>VI[d].f[s.p])]}},
+  infconj:r=>{const v=rp(r,SV),s=rp(r,SUBJ_NOJE),t=r();
+    if(t<.4)return{key:'c'+v.inf+s.t,...sPlain(r,v,s),blank:'conj',ans:v.f[s.p],opts:[v.f[s.p],v.inf],why:`Il faut conjuguer le verbe avec le sujet « ${s.t} ».`};
+    const S=(t<.7?sModal:sPrep)(r,v,s);
+    return{key:S.kind+v.inf+s.t,...S,blank:'inf',ans:v.inf,opts:[v.inf,v.f[s.p]],
+      why:S.kind==='v'?`Après le verbe conjugué « ${S.m} », le verbe reste à l'infinitif.`:`Après la préposition « ${S.m} », le verbe reste à l'infinitif.`}},
+  anag:r=>{const v=rp(r,V.filter(v=>v.inf.length>=4));let L;do{L=shuf([...v.inf],r)}while(L.join('')===v.inf);
+    return{key:v.inf,inf:v.inf,letters:L,hint:pronForm(r,v,Math.floor(r()*6))}},
+  find:r=>{const v=rp(r,SV),s=rp(r,SUBJ);return{key:v.inf+s.t,...(r()<.5?sModal:sPrep)(r,v,s),inf:v.inf}},
+  faut:r=>{const v=rp(r,V),p=Math.floor(r()*6),f=v.f[p];const o=rp(r,v.f.filter(x=>x!==f&&x!==v.inf));
+    return{key:v.inf+p,form:pronForm(r,v,p),inf:v.inf,opts:[v.inf,f,o]}},
+  term:r=>{const v=rp(r,V.filter(v=>v.inf!=='être'));const e=['oir','er','ir','re'].find(e=>v.inf.endsWith(e));return{key:v.inf,r:v.inf.slice(0,-e.length),a:e}},
+  why:r=>{const v=rp(r,SV),s=rp(r,SUBJ);const S=(r()<.5?sModal:sPrep)(r,v,s);return{key:v.inf+s.t+S.kind,...S,inf:v.inf}}
+};
+
+const NORM=w=>strip(w).toUpperCase();
+function genMots(r){
+  for(let attempt=0;attempt<60;attempt++){
+    const pool=shuf(V.filter(v=>{const n=NORM(v.inf).length;return n>=4&&n<=8}),r);
+    const cells=new Map(),words=[];const K=(a,b)=>a+','+b;
+    const ok=(w,r0,c0,d)=>{const dr=d==='v'?1:0,dc=d==='h'?1:0;
+      if(cells.has(K(r0-dr,c0-dc))||cells.has(K(r0+dr*w.length,c0+dc*w.length)))return false;
+      let hits=0;for(let i=0;i<w.length;i++){const rr=r0+dr*i,cc=c0+dc*i,x=cells.get(K(rr,cc));
+        if(x){if(x.l!==w[i]||x.d.has(d))return false;hits++}
+        else if(cells.has(K(rr+dc,cc+dr))||cells.has(K(rr-dc,cc-dr)))return false}
+      if(!hits)return false;
+      let mr=r0,Mr=r0+dr*(w.length-1),mc=c0,Mc=c0+dc*(w.length-1);
+      cells.forEach((_,k)=>{const[a,b]=k.split(',').map(Number);mr=Math.min(mr,a);Mr=Math.max(Mr,a);mc=Math.min(mc,b);Mc=Math.max(Mc,b)});
+      return Mr-mr<10&&Mc-mc<9;};
+    const put=(v,w,r0,c0,d)=>{const dr=d==='v'?1:0,dc=d==='h'?1:0;
+      for(let i=0;i<w.length;i++){const k=K(r0+dr*i,c0+dc*i);const x=cells.get(k)||{l:w[i],d:new Set()};x.d.add(d);cells.set(k,x)}
+      words.push({v,w,r:r0,c:c0,d})};
+    put(pool[0],NORM(pool[0].inf),0,0,'h');const used=new Set([NORM(pool[0].inf)]);
+    for(const v of pool.slice(1)){if(words.length>=7)break;const w=NORM(v.inf);if(used.has(w))continue;
+      const cand=[];for(const p of words){const d=p.d==='h'?'v':'h';
+        for(let i=0;i<w.length;i++)for(let j=0;j<p.w.length;j++){if(w[i]!==p.w[j])continue;
+          const pr=p.r+(p.d==='v'?j:0),pc=p.c+(p.d==='h'?j:0);const r0=d==='v'?pr-i:pr,c0=d==='h'?pc-i:pc;
+          if(ok(w,r0,c0,d))cand.push([r0,c0,d])}}
+      if(cand.length){const[a,b,d]=rp(r,cand);put(v,w,a,b,d);used.add(w)}}
+    if(words.length<6)continue;
+    let mr=1e9,mc=1e9,Mr=-1e9,Mc=-1e9;cells.forEach((_,k)=>{const[a,b]=k.split(',').map(Number);mr=Math.min(mr,a);Mr=Math.max(Mr,a);mc=Math.min(mc,b);Mc=Math.max(Mc,b)});
+    const ws=words.map(x=>({w:x.w,inf:x.v.inf,clue:pronForm(r,x.v,Math.floor(r()*6)),r:x.r-mr,c:x.c-mc,d:x.d}));
+    ws.sort((a,b)=>a.r-b.r||a.c-b.c);let n=0,last='';ws.forEach(x=>{const k=x.r+','+x.c;if(k!==last){n++;last=k}x.n=n});
+    return{key:ws.map(x=>x.w).sort().join(),words:ws,rows:Mr-mr+1,cols:Mc-mc+1};
+  }
+}
+G.mots=genMots;
+
+/* ---------- activités ---------- */
+const ACTS=[
+ {id:'relier',name:'Relie les verbes',desc:"Associe chaque forme conjuguée à son infinitif.",n:40,per:5,c:'var(--indigo)'},
+ {id:'ecrire',name:"Écris l'infinitif",desc:"Vous pouvez → pouvoir. Écris l'infinitif à côté du verbe.",n:60,per:10,c:'var(--maroon)'},
+ {id:'touche',name:'Touche et écris',desc:"Touche le verbe conjugué dans la phrase, puis écris-le à l'infinitif.",n:50,per:10,c:'var(--red)'},
+ {id:'choisir',name:'Choisis le bon verbe',desc:'Trouve le verbe qui complète la phrase.',n:40,per:10,c:'var(--green)'},
+ {id:'infconj',name:'Infinitif ou conjugué ?',desc:'Complète la phrase avec la bonne forme du verbe.',n:50,per:10,c:'var(--pink)'},
+ {id:'anag',name:"L'infinitif caché",desc:'Remets les lettres dans le bon ordre.',n:40,per:10,c:'var(--orange)'},
+ {id:'texte',name:'Souligne dans le texte',desc:"Souligne tous les verbes conjugués, puis écris leur infinitif.",n:TEXTS.length,per:3,c:'var(--indigo)',fixed:true},
+ {id:'mots',name:'Mots croisés',desc:"Écris l'infinitif de chaque verbe dans la grille.",n:20,per:1,c:'var(--green)'},
+ {id:'find',name:"Attrape l'infinitif",desc:"Touche le verbe qui n'est pas conjugué.",n:30,per:10,c:'var(--maroon)'},
+ {id:'faut',name:'L\u2019astuce « il faut »',desc:'Il joue → il faut jouer. Retrouve l\u2019infinitif.',n:30,per:10,c:'var(--red)'},
+ {id:'term',name:'La bonne terminaison',desc:'Radical + er, ir, oir ou re.',n:30,per:10,c:'var(--green)'},
+ {id:'why',name:"Pourquoi l'infinitif ?",desc:'Après un verbe conjugué, ou après à, de, pour, sans ?',n:30,per:10,c:'var(--pink)'}
+];
+const AI=Object.fromEntries(ACTS.map(a=>[a.id,a]));
+ACTS.forEach(a=>{
+  if(a.fixed){a.pool=TEXTS.map((t,i)=>({key:i,t}));return}
+  const r=RNG(hash(a.id)),seen=new Set(),out=[];let k=0;
+  while(out.length<a.n&&k<8000){k++;const it=G[a.id](r);if(!seen.has(it.key)){seen.add(it.key);out.push(it)}}
+  a.pool=out;
+});
+const TOTAL=ACTS.reduce((s,a)=>s+a.pool.length,0);
+
+let prog={};try{prog=JSON.parse(localStorage.getItem('inf-prog')||'{}')}catch(e){prog={}}
+const save=()=>{try{localStorage.setItem('inf-prog',JSON.stringify(prog))}catch(e){}};
+const solved=id=>new Set(prog[id]||[]);
+
+const app=document.getElementById('app'),bar=document.getElementById('bar'),sub=document.getElementById('sub');
+document.getElementById('home').onclick=menu;
+
+/* ---------- menu ---------- */
+function menu(){
+  bar.style.width='0';
+  const done=ACTS.reduce((s,a)=>s+solved(a.id).size,0);
+  sub.textContent=`${TOTAL} exercices · ${done} réussis`;
+  app.innerHTML=`<button class="btn mix" id="mix">Partie mélangée (12 questions)</button>
+  <div class="acts">${ACTS.map(a=>{const s=solved(a.id).size,n=a.pool.length;
+    return `<button class="act" data-a="${a.id}" style="--c:${a.c};--p:${Math.round(s/n*100)}%"><b>${a.name}</b><span>${a.desc}</span><span class="meter"><i></i>${s} / ${n}</span></button>`}).join('')}</div>
+  <button class="reset" id="reset">Remettre les compteurs à zéro</button>`;
+  app.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>startAct(b.dataset.a));
+  document.getElementById('mix').onclick=startMix;
+  document.getElementById('reset').onclick=()=>{if(confirm('Effacer tous les exercices réussis ?')){prog={};save();menu()}};
+  window.scrollTo(0,0);
+}
+
+/* ---------- partie ---------- */
+let S=null;
+function pickFrom(a,n){
+  const sv=solved(a.id);const idx=shuf(a.pool.map((_,i)=>i));
+  idx.sort((x,y)=>(sv.has(x)?1:0)-(sv.has(y)?1:0));
+  return idx.slice(0,n).map(i=>({a,i,it:a.pool[i]}));
+}
+function startAct(id){const a=AI[id];S={items:pickFrom(a,a.per),k:0,score:0,wrong:[],label:a.name,again:()=>startAct(id)};step()}
+function startMix(){
+  const acts=ACTS.filter(a=>!a.fixed&&a.id!=='relier'&&a.id!=='mots');
+  const items=shuf(Array.from({length:12},(_,i)=>acts[i%acts.length])).map(a=>pickFrom(a,1)[0]);
+  S={items,k:0,score:0,wrong:[],label:'Partie mélangée',again:startMix};step();
+}
+function step(){
+  bar.style.width=(S.k/S.items.length*100)+'%';
+  if(S.k>=S.items.length)return end();
+  const {a,i,it}=S.items[S.k];
+  sub.textContent=`${S.label} · question ${S.k+1} sur ${S.items.length}`;
+  app.innerHTML=`<div class="bar2"><span class="pill" style="background:${a.c}">${a.name}</span><button class="back" id="back">Menu</button></div>
+  <div class="card" style="--c:${a.c}"><div id="body"></div><div class="fb" id="fb" role="status"></div>
+  <button class="btn next" id="next">${S.k===S.items.length-1?'Voir mon score':'Question suivante'}</button></div>`;
+  document.getElementById('back').onclick=menu;
+  document.getElementById('next').onclick=()=>{S.k++;step();window.scrollTo(0,0)};
+  let fired=false;
+  const done=(ok,msg)=>{if(fired)return;fired=true;
+    if(ok){S.score++;const sv=solved(a.id);sv.add(i);prog[a.id]=[...sv];save()}else S.wrong.push(msg);
+    const fb=document.getElementById('fb');fb.className='fb show '+(ok?'good':'bad');
+    fb.innerHTML=(ok?'<b>Bravo !</b> ':'<b>Presque…</b> ')+msg;
+    const nx=document.getElementById('next');nx.classList.add('show');nx.focus({preventScroll:true});
+    nx.scrollIntoView({block:'nearest',behavior:'smooth'});
+  };
+  RUN[a.id](it,document.getElementById('body'),done);
+}
+function end(){
+  bar.style.width='100%';
+  const n=S.items.length,sc=S.score,st=sc===n?3:sc>=n*.75?2:sc>=n/2?1:0;
+  sub.textContent=S.label;
+  const msg=["Relis la carte mentale et réessaie !","Pas mal, continue !","Très bien joué !","Parfait, tu es un champion de l'infinitif !"][st];
+  app.innerHTML=`<div class="card end" style="--c:var(--red)">
+    <h2 style="margin:0">Fin de la partie</h2>
+    <p class="score">${sc}/${n}</p>
+    <div class="stars" aria-label="${st} étoiles sur 3">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div>
+    <p style="margin:0">${msg}</p>
+    ${S.wrong.length?`<ul class="recap"><li><b>À revoir :</b></li>${S.wrong.map(m=>`<li>${m}</li>`).join('')}</ul>`:''}
+    <div class="row2"><button class="btn next show" id="again">Continuer</button><button class="btn" id="menu">Retour au menu</button></div></div>`;
+  document.getElementById('again').onclick=()=>{S.again();window.scrollTo(0,0)};
+  document.getElementById('menu').onclick=menu;
+}
+
+/* ---------- saisie commune ---------- */
+function writeBox(ph){return `<div class="write"><input id="inp" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${ph}" aria-label="${ph}"><button class="btn go" id="go">Valider</button></div>`}
+function wireWrite(box,onSubmit){
+  const inp=box.querySelector('#inp'),go=box.querySelector('#go');
+  const f=()=>{if(!inp.value.trim()){inp.focus();return}inp.disabled=true;go.disabled=true;onSubmit(inp)};
+  go.onclick=f;inp.onkeydown=e=>{if(e.key==='Enter')f()};inp.focus({preventScroll:true});
+}
+function writeResult(inp,res,good){inp.classList.add(res.ok?'ok':'no');
+  if(res.acc)return ` Attention à l'orthographe : <b>${good}</b>.`;return ''}
+
+/* ---------- chaque activité ---------- */
+const RUN={
+relier(it,box,done){
+  const right=shuf(it.pairs.map(p=>p.inf));let sel=null,err=0,left=it.pairs.length;
+  box.innerHTML=`<p class="ask">Touche un verbe conjugué, puis son infinitif.</p>
+  <div class="cols"><div>${it.pairs.map((p,i)=>`<button class="btn" data-l="${i}">${p.form}</button>`).join('')}</div>
+  <div>${right.map((f,i)=>`<button class="btn" data-r="${i}">${f}</button>`).join('')}</div></div>`;
+  const L=[...box.querySelectorAll('[data-l]')],Rb=[...box.querySelectorAll('[data-r]')];
+  const clear=()=>{[...L,...Rb].forEach(b=>b.classList.remove('sel'))};
+  const tryPair=(li,ri)=>{const bl=L[li],br=Rb[ri];clear();sel=null;
+    if(it.pairs[li].inf===right[ri]){bl.classList.add('ok');br.classList.add('ok');bl.disabled=br.disabled=true;
+      if(--left===0)done(err===0,err?`${err} erreur${err>1?'s':''}. Les bonnes paires : ${it.pairs.map(p=>`${p.form} → <b>${p.inf}</b>`).join(', ')}.`:'Toutes les paires sont justes.')}
+    else{err++;bl.classList.add('no');br.classList.add('no');setTimeout(()=>{bl.classList.remove('no');br.classList.remove('no')},600)}};
+  L.forEach((b,i)=>b.onclick=()=>{if(sel&&sel.s==='r')return tryPair(i,sel.i);clear();sel={s:'l',i};b.classList.add('sel')});
+  Rb.forEach((b,i)=>b.onclick=()=>{if(sel&&sel.s==='l')return tryPair(sel.i,i);clear();sel={s:'r',i};b.classList.add('sel')});
+},
+ecrire(it,box,done){
+  box.innerHTML=`<p class="ask">Écris l'infinitif de ce verbe.</p><p class="big">${cap(it.form)} :</p>${writeBox('infinitif')}`;
+  wireWrite(box,inp=>{const res=check(inp.value,[it.inf]);const x=writeResult(inp,res,it.inf);
+    done(res.ok,`${cap(it.form)} : <b>${it.inf}</b>.`+x)});
+},
+touche(it,box,done){
+  let err=0;
+  box.innerHTML=`<p class="ask">Touche le verbe conjugué.</p>${sentHTML(it.toks,{tap:1})}<div id="step2"></div>`;
+  box.querySelectorAll('.w').forEach(b=>b.onclick=()=>{
+    const t=it.toks[b.dataset.t];
+    if(t.role!=='conj'){if(!b.classList.contains('miss'))err++;b.classList.add('miss');return}
+    b.classList.add('hit');box.querySelectorAll('.w').forEach(x=>x.disabled=true);
+    const s2=box.querySelector('#step2');
+    s2.innerHTML=`<p class="ask" style="margin:16px 0 0">Bien vu ! Écris « ${t.w} » à l'infinitif.</p>${writeBox('infinitif')}`;
+    wireWrite(s2,inp=>{const res=check(inp.value,[it.inf]);const x=writeResult(inp,res,it.inf);
+      done(res.ok&&err===0,`Le verbe conjugué est « ${t.w} », son infinitif est <b>${it.inf}</b>.`+x)});
+  });
+},
+choisir(it,box,done){
+  box.innerHTML=`<p class="ask">Choisis le verbe qui complète la phrase.</p>${sentHTML(it.toks,{blank:it.blank})}
+  <div class="opts">${shuf(it.opts).map(o=>`<button class="btn" data-o="${o}">${o}</button>`).join('')}</div>`;
+  box.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{
+    const ok=b.dataset.o===it.ans;
+    box.querySelectorAll('[data-o]').forEach(x=>{x.disabled=true;if(x.dataset.o===it.ans)x.classList.add('ok')});
+    if(!ok)b.classList.add('no');box.querySelector('#blank').textContent=it.ans;
+    done(ok,sentText(it.toks,it.blank,it.ans));
+  });
+},
+infconj(it,box,done){
+  box.innerHTML=`<p class="ask">Infinitif ou verbe conjugué ?</p>${sentHTML(it.toks,{blank:it.blank})}
+  <div class="opts">${shuf(it.opts).map(o=>`<button class="btn" data-o="${o}">${o}</button>`).join('')}</div>`;
+  box.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{
+    const ok=b.dataset.o===it.ans;
+    box.querySelectorAll('[data-o]').forEach(x=>{x.disabled=true;if(x.dataset.o===it.ans)x.classList.add('ok')});
+    if(!ok)b.classList.add('no');box.querySelector('#blank').textContent=it.ans;
+    done(ok,`${sentText(it.toks,it.blank,it.ans)} ${it.why}`);
+  });
+},
+anag(it,box,done){
+  const L=it.letters,n=L.length;let pick=[],tries=0,over=false;
+  box.innerHTML=`<p class="ask">Remets les lettres dans l'ordre pour trouver l'infinitif.</p>
+  <p style="margin:0;color:var(--soft)">Indice : ${it.hint}</p>
+  <div class="slots" id="slots"></div><div class="tiles">${L.map((c,i)=>`<button class="tile" data-i="${i}">${c}</button>`).join('')}</div>
+  <button class="btn ghost" id="clr">Effacer</button>`;
+  const slots=box.querySelector('#slots'),tiles=[...box.querySelectorAll('.tile')];
+  const draw=()=>{slots.innerHTML=Array.from({length:n},(_,k)=>`<button class="slot ${pick[k]!=null?'full':''}" data-k="${k}" aria-label="case ${k+1}">${pick[k]!=null?L[pick[k]]:''}</button>`).join('');
+    tiles.forEach((t,i)=>t.disabled=over||pick.includes(i));
+    slots.querySelectorAll('.slot').forEach(s=>s.onclick=()=>{if(over)return;const k=+s.dataset.k;if(pick[k]!=null){pick.splice(k,1);draw()}})};
+  const test=()=>{const w=pick.map(i=>L[i]).join('');
+    if(w===it.inf){over=true;slots.className='slots ok';draw();slots.className='slots ok';done(true,`L'infinitif caché est <b>${it.inf}</b>.`)}
+    else{tries++;slots.className='slots no';
+      if(tries>=2){over=true;pick=[...it.inf].map((c,k)=>{const used=new Set();return null});
+        slots.innerHTML=[...it.inf].map(c=>`<span class="slot full">${c}</span>`).join('');tiles.forEach(t=>t.disabled=true);
+        done(false,`L'infinitif caché était <b>${it.inf}</b> (${it.hint}).`)}
+      else setTimeout(()=>{pick=[];slots.className='slots';draw()},700)}};
+  tiles.forEach((t,i)=>t.onclick=()=>{if(over||pick.includes(i))return;pick.push(i);draw();if(pick.length===n)test()});
+  box.querySelector('#clr').onclick=()=>{if(over)return;pick=[];slots.className='slots';draw()};
+  draw();
+},
+texte(it,box,done){
+  const segs=it.t.split(/(\[[^\]]+\])/).filter(Boolean);let html='',verbs=[],k=0;
+  segs.forEach(sg=>{
+    if(sg[0]==='['){const[f,inf]=sg.slice(1,-1).split('|');verbs.push({f,inf,k});html+=`<button class="w" data-k="${k}" data-v="${verbs.length-1}">${f}</button>`;k++}
+    else sg.split(/(\s+)/).forEach(p=>{if(!p)return;if(/^\s+$/.test(p)||/^[.,!?;:]+$/.test(p)){html+=p;return}html+=`<button class="w" data-k="${k++}">${p}</button>`})});
+  let found=0,err=0,phase=1;
+  box.innerHTML=`<p class="ask">Souligne tous les verbes conjugués.</p><p class="text">${html}</p>
+  <p class="count" id="cnt"></p><button class="btn ghost" id="stop">Je n'en trouve plus</button><div id="step2"></div>`;
+  const cnt=box.querySelector('#cnt');const upd=()=>cnt.textContent=`${found} verbe${found>1?'s':''} souligné${found>1?'s':''}`;upd();
+  const words=[...box.querySelectorAll('.w')];
+  words.forEach(b=>b.onclick=()=>{if(phase!==1)return;
+    if(b.dataset.v==null){if(!b.classList.contains('miss')){err++;b.classList.add('miss');setTimeout(()=>b.classList.remove('miss'),900)}return}
+    if(b.classList.contains('hit'))return;b.classList.add('hit');found++;upd();if(found===verbs.length)step2(0)});
+  box.querySelector('#stop').onclick=()=>step2(verbs.length-found);
+  function step2(missed){
+    phase=2;words.forEach(b=>{b.disabled=true;if(b.dataset.v!=null&&!b.classList.contains('hit'))b.classList.add('lost')});
+    box.querySelector('#stop').remove();
+    cnt.textContent=missed?`${missed} verbe${missed>1?'s':''} oublié${missed>1?'s':''} (en orange).`:`Tous les verbes sont soulignés !`;
+    const s2=box.querySelector('#step2');
+    s2.innerHTML=`<p class="ask" style="margin:18px 0 0">Écris chaque verbe à l'infinitif.</p>
+    <div class="vlist">${verbs.map((v,i)=>`<div class="vrow"><b>${v.f}</b><input data-i="${i}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="infinitif de ${v.f}"></div>`).join('')}</div>
+    <button class="btn go" id="chk" style="width:100%;margin-top:14px">Vérifier</button>`;
+    const ins=[...s2.querySelectorAll('input')];ins[0].focus({preventScroll:true});
+    ins.forEach((x,i)=>x.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();(ins[i+1]||s2.querySelector('#chk')).focus()}});
+    s2.querySelector('#chk').onclick=()=>{
+      if(ins.some(x=>!x.value.trim())){ins.find(x=>!x.value.trim()).focus();return}
+      let bad=0;ins.forEach((x,i)=>{const res=check(x.value,[verbs[i].inf]);x.disabled=true;x.classList.add(res.ok?'ok':'no');if(!res.ok){bad++;x.insertAdjacentHTML('afterend',`<small>${verbs[i].inf}</small>`)}});
+      s2.querySelector('#chk').remove();
+      const parts=[];if(err)parts.push(`${err} mot${err>1?'s':''} souligné${err>1?'s':''} par erreur`);if(missed)parts.push(`${missed} verbe${missed>1?'s':''} oublié${missed>1?'s':''}`);if(bad)parts.push(`${bad} infinitif${bad>1?'s':''} à corriger`);
+      done(!err&&!missed&&!bad,(parts.length?parts.join(', ')+'. ':'')+verbs.map(v=>`${v.f} → <b>${v.inf}</b>`).join(', ')+'.');
+    };
+  }
+},
+mots(it,box,done){
+  const grid=new Map();it.words.forEach((x,wi)=>{for(let i=0;i<x.w.length;i++){const k=(x.r+(x.d==='v'?i:0))+','+(x.c+(x.d==='h'?i:0));
+    const g=grid.get(k)||{l:x.w[i],ws:[]};g.ws.push([wi,i]);grid.set(k,g)}});
+  const starts={};it.words.forEach(x=>starts[x.r+','+x.c]=x.n);
+  let h='';for(let r=0;r<it.rows;r++)for(let c=0;c<it.cols;c++){const k=r+','+c;
+    h+=grid.has(k)?`<div class="cc" data-k="${k}">${starts[k]?`<span class="num">${starts[k]}</span>`:''}<input maxlength="2" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" aria-label="case ligne ${r+1} colonne ${c+1}"></div>`:'<div class="cx"></div>'}
+  const cl=d=>it.words.map((x,i)=>x.d===d?`<button class="clue" data-w="${i}"><b>${x.n}.</b> ${x.clue}</button>`:'').join('');
+  box.innerHTML=`<p class="ask">Écris chaque verbe à l'infinitif, sans accents.</p>
+  <div class="cw" style="--cols:${it.cols}">${h}</div>
+  <div class="clues"><h3>Horizontal</h3>${cl('h')}<h3>Vertical</h3>${cl('v')}</div>
+  <p class="cwnote" id="note"></p>
+  <div class="row2"><button class="btn go" id="chk">Vérifier</button><button class="btn" id="sol">Voir la solution</button></div>`;
+  const inp=k=>box.querySelector(`[data-k="${k}"] input`);
+  const cellsOf=wi=>{const x=it.words[wi];return[...x.w].map((_,i)=>(x.r+(x.d==='v'?i:0))+','+(x.c+(x.d==='h'?i:0)))};
+  let cur=0,over=false;
+  const hl=()=>{box.querySelectorAll('.cc').forEach(e=>e.classList.remove('on'));cellsOf(cur).forEach(k=>box.querySelector(`[data-k="${k}"]`).classList.add('on'));
+    box.querySelectorAll('.clue').forEach(b=>b.classList.toggle('on',+b.dataset.w===cur))};
+  const move=(k,step)=>{const cs=cellsOf(cur),i=cs.indexOf(k)+step;if(i>=0&&i<cs.length)inp(cs[i]).focus()};
+  grid.forEach((g,k)=>{const e=inp(k);
+    e.addEventListener('mousedown',()=>{if(document.activeElement===e&&g.ws.length>1){cur=g.ws.find(([w])=>w!==cur)?.[0]??cur;hl()}});
+    e.addEventListener('focus',()=>{if(!g.ws.some(([w])=>w===cur))cur=g.ws[0][0];hl()});
+    e.addEventListener('input',()=>{const ch=NORM(e.value.slice(-1)).replace(/[^A-Z]/g,'');e.value=ch;e.classList.remove('ok','no');if(ch)move(k,1)});
+    e.addEventListener('keydown',ev=>{if(ev.key==='Backspace'&&!e.value){ev.preventDefault();const cs=cellsOf(cur),i=cs.indexOf(k);if(i>0){const p=inp(cs[i-1]);p.value='';p.focus()}}});
+  });
+  box.querySelectorAll('.clue').forEach(b=>b.onclick=()=>{cur=+b.dataset.w;const cs=cellsOf(cur);(cs.map(inp).find(e=>!e.value)||inp(cs[0])).focus();hl()});
+  const list=()=>it.words.map(x=>`${x.clue} → <b>${x.inf}</b>`).join(', ')+'.';
+  let tries=0;
+  box.querySelector('#chk').onclick=()=>{if(over)return;let bad=0,empty=0;
+    grid.forEach((g,k)=>{const e=inp(k);if(!e.value){empty++;return}const good=e.value===g.l;e.classList.toggle('ok',good);e.classList.toggle('no',!good);if(!good)bad++});
+    it.words.forEach((x,i)=>{box.querySelector(`.clue[data-w="${i}"]`).classList.toggle('solved',cellsOf(i).every(k=>inp(k).value===grid.get(k).l))});
+    if(!bad&&!empty){over=true;grid.forEach((_,k)=>inp(k).disabled=true);box.querySelector('#note').textContent='';box.querySelector('.row2').remove();done(tries===0,(tries?'Grille terminée après correction. ':'Grille parfaite du premier coup ! ')+list());return}
+    tries++;box.querySelector('#note').textContent=[bad?`${bad} lettre${bad>1?'s':''} à corriger`:'',empty?`${empty} case${empty>1?'s':''} vide${empty>1?'s':''}`:''].filter(Boolean).join(', ')+'.'};
+  box.querySelector('#sol').onclick=()=>{if(over)return;over=true;grid.forEach((g,k)=>{const e=inp(k);e.classList.toggle('ok',e.value===g.l);e.classList.toggle('no',e.value!==g.l);e.value=g.l;e.disabled=true});
+    box.querySelector('#note').textContent='';box.querySelector('.row2').remove();done(false,'Solution : '+list())};
+  hl();
+},
+find(it,box,done){
+  box.innerHTML=`<p class="ask">Touche le verbe à l'infinitif.</p>${sentHTML(it.toks,{tap:1})}`;
+  box.querySelectorAll('.w').forEach(b=>b.onclick=()=>{
+    const ok=it.toks[b.dataset.t].role==='inf';
+    box.querySelectorAll('.w').forEach(x=>{x.disabled=true;if(it.toks[x.dataset.t].role==='inf')x.classList.add('hit')});
+    if(!ok)b.classList.add('miss');
+    done(ok,`« ${it.inf} » n'est pas conjugué : c'est l'infinitif.`)});
+},
+faut(it,box,done){
+  box.innerHTML=`<p class="ask">Trouve l'infinitif avec l'astuce.</p><p class="big">${cap(it.form)}</p>
+  <p class="astuce">Il faut <span id="gap">?</span></p>
+  <div class="opts">${shuf(it.opts).map(o=>`<button class="btn" data-o="${o}">${o}</button>`).join('')}</div>`;
+  box.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{
+    const ok=b.dataset.o===it.inf;
+    box.querySelectorAll('[data-o]').forEach(x=>{x.disabled=true;if(x.dataset.o===it.inf)x.classList.add('ok')});
+    if(!ok)b.classList.add('no');box.querySelector('#gap').textContent=it.inf;
+    done(ok,`${cap(it.form)} → Il faut <b>${it.inf}</b>.`)});
+},
+term(it,box,done){
+  box.innerHTML=`<p class="ask">Complète le verbe à l'infinitif.</p><p class="big">${it.r}<span class="hl" id="gap">___</span></p>
+  <div class="opts four">${['er','ir','oir','re'].map(o=>`<button class="btn" data-o="${o}">${o}</button>`).join('')}</div>`;
+  box.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{
+    const ok=b.dataset.o===it.a;
+    box.querySelectorAll('[data-o]').forEach(x=>{x.disabled=true;if(x.dataset.o===it.a)x.classList.add('ok')});
+    if(!ok)b.classList.add('no');box.querySelector('#gap').textContent=it.a;
+    done(ok,`Radical + terminaison : ${it.r} + ${it.a} = <b>${it.r}${it.a}</b>.`)});
+},
+why(it,box,done){
+  box.innerHTML=`<p class="ask">Pourquoi ce verbe est-il à l'infinitif ?</p>${sentHTML(it.toks,{hl:'inf'})}
+  <div class="opts"><button class="btn" data-o="v">Après un verbe conjugué</button><button class="btn" data-o="p">Après à, de, pour, sans</button></div>`;
+  box.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{
+    const ok=b.dataset.o===it.kind;
+    box.querySelectorAll('[data-o]').forEach(x=>{x.disabled=true;if(x.dataset.o===it.kind)x.classList.add('ok')});
+    if(!ok)b.classList.add('no');
+    done(ok,it.kind==='v'?`« ${it.inf} » suit le verbe conjugué <b>${it.m}</b>.`:`« ${it.inf} » suit la préposition <b>${it.m}</b>.`)});
+}
+};
+menu();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+</script>
+</body>
+</html>
